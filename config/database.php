@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "spotify_clone";
+    private $db_name = "SpotifyClone";
     private $username = "postgres";
     private $password = "salmahm";
     private $conn;
