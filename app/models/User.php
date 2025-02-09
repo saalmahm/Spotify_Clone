@@ -1,139 +1,60 @@
 <?php
-class User {
-    private $conn;
-    private $idUser;
-    private $username;
-    private $email;
-    private $password;
-    private $role;
-    private $status;
-    private $image;
-    private $phone;
 
-    public function __construct($db, $username, $email, $password, $role = 'user', $image = null, $phone = null, $status = 'active') {
-        $this->conn = $db;
+abstract class User {
+    protected $idUser;
+    protected $username;
+    protected $email;
+    protected $password;
+    protected $role;
+    protected $status;
+    protected $image;
+    protected $phone;
+    protected $db;
+
+    public function __construct($db, $username = null, $email = null, $password = null, $role = 'user', $status = 'active', $image = null, $phone = null) {
+        $this->db = $db;
         $this->username = $username;
         $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $password;
         $this->role = $role;
+        $this->status = $status;
         $this->image = $image;
         $this->phone = $phone;
-        $this->status = $status;
     }
 
-    public function getId() {
-        return $this->idUser;
-    }
-
-    public function getUsername() {
-        return $this->username;
-    }
-
-    public function setUsername($username) {
-        if (!empty($username)) {
-            $this->username = htmlspecialchars(strip_tags($username));
-        }
-    }
-
-    public function getEmail() {
-        return $this->email;
-    }
-
-    public function setEmail($email) {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->email = $email;
-        }
-    }
-
-    public function getRole() {
-        return $this->role;
-    }
-
-    public function setRole($role) {
-        $this->role = $role;
-    }
-
-    public function getStatus() {
-        return $this->status;
-    }
-
-    public function setStatus($status) {
-        $this->status = $status;
-    }
-
-    public function getImage() {
-        return $this->image;
-    }
-
-    public function setImage($image) {
-        $this->image = $image;
-    }
-
-    public function getPhone() {
-        return $this->phone;
-    }
-
-    public function setPhone($phone) {
-        if (preg_match('/^[0-9]{10}$/', $phone)) {
-            $this->phone = $phone;
-        }
-    }
-
+    // Méthodes communes
     public function register() {
-        $query = "INSERT INTO \"User\" (username, email, password, role, status, image, phone) VALUES (:username, :email, :password, :role, :status, :image, :phone)";
-        $stmt = $this->conn->prepare($query);
-        return $stmt->execute([
-            'username' => $this->username,
-            'email' => $this->email,
-            'password' => $this->password,
-            'role' => $this->role,
-            'status' => $this->status,
-            'image' => $this->image,
-            'phone' => $this->phone
-        ]);
+        // Register a new user
+        $query = "INSERT INTO Users (username, email, password, role, status, image, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$this->username, $this->email, password_hash($this->password, PASSWORD_BCRYPT), $this->role, "active", $this->image, $this->phone]);
+        return $this->db->lastInsertId();
     }
 
-    public static function login($email, $password, $db) {
-        $query = "SELECT * FROM \"User\" WHERE email = :email";
-        $stmt = $db->prepare($query);
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password, $user['password'])) {
-            return new User($db, $user['username'], $user['email'], $user['password'], $user['role'], $user['image'], $user['phone'], $user['status']);
+    public function login() {
+        // Login logic
+        $query = "SELECT * FROM Users WHERE email = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$this->email]);
+        $user = $stmt->fetch();
+        if ($user && password_verify($this->password, $user['password'])) {
+            $_SESSION['user'] = $user;
+            return true;
         }
         return false;
     }
 
     public function logout() {
-        session_start();
-        session_unset();
+        // Logout logic
+        unset($_SESSION['user']);
         session_destroy();
-        return true;
     }
 
-    public function updateProfile($username, $email, $image, $phone) {
-        $this->setUsername($username);
-        $this->setEmail($email);
-        $this->setImage($image);
-        $this->setPhone($phone);
-        
-        $query = "UPDATE \"User\" SET username = :username, email = :email, image = :image, phone = :phone WHERE idUser = :idUser";
-        $stmt = $this->conn->prepare($query);
-        return $stmt->execute([
-            'username' => $this->username,
-            'email' => $this->email,
-            'image' => $this->image,
-            'phone' => $this->phone,
-            'idUser' => $this->idUser
-        ]);
-    }
-
-    public static function getUserById($db, $idUser) {
-        $query = "SELECT * FROM \"User\" WHERE idUser = :idUser";
-        $stmt = $db->prepare($query);
-        $stmt->execute(['idUser' => $idUser]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public function updateProfile() {
+        // Update user profile
+        $query = "UPDATE Users SET username = ?, email = ?, phone = ?, image = ? WHERE idUser = ?";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$this->username, $this->email, $this->phone, $this->image, $this->idUser]);
     }
 }
-
+?>
