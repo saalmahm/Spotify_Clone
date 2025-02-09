@@ -2,7 +2,7 @@
 
 <div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
     <div class="bg-gray-900 shadow-2xl rounded-lg p-8 w-full max-w-lg border border-gray-700">
-        <h2 class="text-3xl font-bold text-center text-white mb-6">📀 Uploader un Album</h2>
+        <h2 class="text-3xl font-bold text-center text-white mb-6"> Uploader un Album</h2>
 
         <?php if (isset($message)) { ?>
             <p class="text-center text-red-400 font-semibold"> <?php echo $message; ?> </p>
@@ -21,7 +21,7 @@
             <!-- Ajouter plusieurs chansons -->
             <div id="songUploads">
                 <div class="song-upload">
-                    <h3 class="text-xl font-semibold text-white">🎶 Chanson 1</h3>
+                    <h3 class="text-xl font-semibold text-white"> Chanson 1</h3>
 
                     <label for="songTitles[]" class="block text-gray-300 font-medium">Titre de la chanson :</label>
                     <input type="text" name="songTitles[]" required
@@ -48,12 +48,12 @@
             <!-- Bouton pour ajouter une autre chanson -->
             <button type="button" id="addSong"
                 class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105">
-                ➕ Ajouter une autre chanson
+                Ajouter une autre chanson
             </button>
 
             <button type="submit"
                 class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
-                📤 Uploader l'album
+                Uploader l'album
             </button>
         </form>
     </div>
@@ -66,7 +66,7 @@
 
         let songHtml = `
             <div class="song-upload">
-                <h3 class="text-xl font-semibold text-white">🎶 Chanson ${index}</h3>
+                <h3 class="text-xl font-semibold text-white"> Chanson ${index}</h3>
 
                 <label for="songTitles[]" class="block text-gray-300 font-medium">Titre de la chanson :</label>
                 <input type="text" name="songTitles[]" required

@@ -26,9 +26,12 @@
                 <?php if (isset($popularAlbums) && is_array($popularAlbums)) { ?>
                     <?php foreach ($popularAlbums as $album) { ?>
                         <div class="bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition transform hover:bg-gray-700">
-                            <img src="<?php echo $album['cover']; ?>" alt="<?php echo $album['nom']; ?>" class="rounded-lg w-full h-40 object-cover">
-                            <h3 class="text-lg font-semibold mt-3"> <?php echo $album['nom']; ?> </h3>
-                            <p class="text-gray-400 text-sm"> <?php echo $album['artisteId']; ?> </p>
+                            <img src="<?php echo !empty($album['cover']) ? $album['cover'] : 'public/images/default-album.jpg'; ?>" 
+                                 alt="<?php echo htmlspecialchars($album['nom']); ?>" 
+                                 class="rounded-lg w-full h-40 object-cover">
+                            <h3 class="text-lg font-semibold mt-3"><?php echo htmlspecialchars($album['nom']); ?></h3>
+                            <p class="text-gray-400 text-sm">Par <?php echo htmlspecialchars($album['artistename']); ?></p>
+                            <p class="text-gray-500 text-xs mt-1"><?php echo $album['nombrechansons']; ?> chansons</p>
                         </div>
                     <?php } ?>
                 <?php } else { ?>

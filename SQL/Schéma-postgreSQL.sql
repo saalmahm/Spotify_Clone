@@ -115,4 +115,3 @@ CREATE TABLE AlbumChanson (
     FOREIGN KEY (albumId) REFERENCES Album (idAlbum) ON DELETE CASCADE,
     FOREIGN KEY (chansonId) REFERENCES Chanson (idChanson) ON DELETE CASCADE
 );
-

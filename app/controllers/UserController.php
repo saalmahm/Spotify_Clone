@@ -81,7 +81,7 @@ class UserController {
             $email = $_POST['email'];
             $password = $_POST['password'];
     
-            $userModel = new User($this->db, null, null, $email, $password);
+            $userModel = new User($this->db, null, null, $email, $password); 
     
             if ($userModel->login()) {
                 $user = $userModel->getUserByEmail($email);
@@ -115,6 +115,7 @@ class UserController {
         header("Location: login");
         exit();
     }
+    
 
     public function updateProfile() {
         if (isset($_SESSION['user'])) {

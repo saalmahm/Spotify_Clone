@@ -79,14 +79,29 @@ class Playlist {
         return $albumId;
     }
     public function getPopularAlbums($limit = 5) {
-        $query = "SELECT a.nom, a.artisteId, COUNT(ac.chansonId) as nombreChansons
+        $query = "SELECT 
+                    a.idAlbum,
+                    a.nom,
+                    a.artisteId,
+                    u.username as artisteName,
+                    (
+                        SELECT c.image 
+                        FROM Chanson c 
+                        JOIN AlbumChanson ac ON c.idChanson = ac.chansonId 
+                        WHERE ac.albumId = a.idAlbum 
+                        LIMIT 1
+                    ) as cover,
+                    COUNT(ac.chansonId) as nombreChansons
                   FROM Album a
                   JOIN AlbumChanson ac ON a.idAlbum = ac.albumId
-                  GROUP BY a.nom, a.artisteId
+                  JOIN Users u ON a.artisteId = u.idUser
+                  GROUP BY a.idAlbum, a.nom, a.artisteId, u.username
                   ORDER BY nombreChansons DESC
-                  LIMIT ?";
+                  LIMIT :limit";
+        
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$limit]);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
