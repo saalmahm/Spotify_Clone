@@ -1,0 +1,16 @@
+{
+    "name": "youco/spotify-clone",
+    "autoload": {
+        "classmap": [
+        "public/",
+        "app/"
+    ]
+    },
+    "authors": [
+        {
+            "name": "salma hamdi",
+            "email": "saalmahm51@gmail.com"
+        }
+    ],
+    "require": {}
+}
