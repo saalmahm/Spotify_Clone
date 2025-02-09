@@ -44,5 +44,17 @@ class Chanson {
         $stmt->execute([$this->idChanson]);
         return $stmt->fetch();
     }
+
+    public function getTrendingSongs($limit = 4) {
+        $query = "SELECT c.titre AS title, u.username AS artist, c.image AS cover, c.songFile
+                  FROM Chanson c
+                  JOIN Users u ON c.artisteId = u.idUser
+                  ORDER BY c.titre 
+                  LIMIT ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }
 ?>

@@ -1,6 +1,7 @@
 <?php
 
 class Artiste extends User {
+    
     public function televerserChanson($chansonData) {
         if (empty($chansonData['titre']) || empty($chansonData['image']) || empty($chansonData['artisteId']) || empty($chansonData['categorieId']) || empty($chansonData['type']) || empty($chansonData['songFile'])) {
             error_log('Validation failed: Some fields are empty');
