@@ -175,6 +175,13 @@ class Playlist {
                       JOIN AlbumChanson ac ON c.idChanson = ac.chansonId
                       WHERE ac.albumId = ?";
         
+        // Debug column names
+        $columnQuery = "SELECT column_name FROM information_schema.columns WHERE table_name = 'Chanson'";
+        $columnStmt = $this->db->prepare($columnQuery);
+        $columnStmt->execute();
+        $columns = $columnStmt->fetchAll(PDO::FETCH_COLUMN);
+        error_log("Columns in Chanson table: " . print_r($columns, true));
+
         $songStmt = $this->db->prepare($songQuery);
         $songStmt->execute([$albumId]);
         $chansons = $songStmt->fetchAll(PDO::FETCH_ASSOC);

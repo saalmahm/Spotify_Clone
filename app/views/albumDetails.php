@@ -40,10 +40,34 @@
                                         ?></p>
                                     </div>
                                     <audio controls class="ml-4">
-                                        <source src="<?php 
-                                            echo htmlspecialchars($chanson['songFile']); 
-                                            echo "\n<!-- Debug: songFile = " . print_r($chanson, true) . " -->";
-                                        ?>" type="audio/mpeg">
+                                        <?php 
+                                        // Try multiple possible column names
+                                        $songFileColumns = ['songFile', 'songfile', 'songFile'];
+                                        $songFilePath = '';
+                                        foreach ($songFileColumns as $column) {
+                                            if (isset($chanson[$column]) && !empty($chanson[$column])) {
+                                                $songFilePath = $chanson[$column];
+                                                break;
+                                            }
+                                        }
+                                        
+                                        // Construct full path
+                                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/spotify-clone/' . $songFilePath;
+                                        
+                                        // Debug information
+                                        echo "<!-- Debug: 
+                                        Possible columns tried: " . implode(', ', $songFileColumns) . "
+                                        Selected column path: " . $songFilePath . "
+                                        Full Path: " . $fullPath . "
+                                        File Exists: " . (file_exists($fullPath) ? 'Yes' : 'No') . " 
+                                        Full Chanson Array: " . print_r($chanson, true) . " 
+                                        -->";
+                                        
+                                        // Only create source if path is valid
+                                        if (!empty($songFilePath) && file_exists($fullPath)): 
+                                        ?>
+                                        <source src="<?php echo htmlspecialchars($songFilePath); ?>" type="audio/mpeg">
+                                        <?php endif; ?>
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
