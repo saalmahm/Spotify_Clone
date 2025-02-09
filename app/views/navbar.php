@@ -16,8 +16,7 @@
                     <li><a href="uploadSong" class="hover:text-gray-300">Uploader une chanson</a></li>
                     <li><a href="uploadAlbum" class="hover:text-gray-300">Uploader un album</a></li>
                     <li><a href="profile" class="hover:text-gray-300">Mon profil</a></li>
-                    <li><a href="logout" class="text-red-400 hover:text-red-500">Déconnexion</a></li>
-                </ul>
+                    <li><a href="logout" class="text-red-400 hover:text-red-500">Déconnexion</a></li>                    </ul>
 
                 <!-- Bouton Menu Mobile -->
                 <div class="md:hidden">
@@ -48,8 +47,7 @@
             <li><a href="uploadSong" class="block text-white hover:text-gray-300">Uploader une chanson</a></li>
             <li><a href="uploadAlbum" class="block text-white hover:text-gray-300">Uploader un album</a></li>
             <li><a href="profile" class="block text-white hover:text-gray-300">Mon profil</a></li>
-            <li><a href="logout" class="block text-red-400 hover:text-red-500">Déconnexion</a></li>
-        </ul>
+            <li><a href="logout" class="text-red-400 hover:text-red-500">Déconnexion</a></li></ul>
     </div>
 
     <!-- Script JavaScript -->

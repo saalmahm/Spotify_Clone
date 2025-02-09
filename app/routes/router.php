@@ -19,7 +19,9 @@ class Router {
             'profile' => ['UserController', 'updateProfile'],
             'register' => ['UserController', 'register'],
             'uploadSong' => ['ArtisteController', 'uploadSong'],
-            'uploadAlbum'=> ['ArtisteController', 'organiserChansons']
+            'uploadAlbum'=> ['ArtisteController', 'organiserChansons'],
+            'logout' => ['UserController', 'logout'],
+
         ];
     
         // Vérification de la route et appel du contrôleur
