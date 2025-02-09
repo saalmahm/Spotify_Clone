@@ -1,10 +1,9 @@
 <?php
-
 class ArtisteController {
     private $artiste_model;
 
     public function __construct($db) {
-        $this->artiste_model = new Artiste($db);
+        $this->artiste_model = new Artiste($db, null);
     }
 
     public function index() {
@@ -46,7 +45,8 @@ class ArtisteController {
                         'image' => $targetFilePathImage,
                         'artisteId' => $artisteId,
                         'categorieId' => $categorie,
-                        'type' => $type
+                        'type' => $type,
+                        'songFile' => $targetFilePathSong // Ajoute le chemin du fichier de la chanson
                     ];
                     if($this->artiste_model->televerserChanson($chansonData)){
                         $message = "La chanson a été uploadée avec succès.";
@@ -65,7 +65,7 @@ class ArtisteController {
             }
 
             header('Location: home');
-        } else{
+        } else {
             $categories = $this->artiste_model->getCategories();
             require __DIR__ .'/../views/uploadSong.php';
         }

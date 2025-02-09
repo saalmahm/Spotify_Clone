@@ -1,6 +1,5 @@
 <?php
-
-abstract class User {
+class User {
     protected $idUser;
     protected $username;
     protected $email;
@@ -11,8 +10,9 @@ abstract class User {
     protected $phone;
     protected $db;
 
-    public function __construct($db, $username = null, $email = null, $password = null, $role = 'user', $status = 'active', $image = null, $phone = null) {
+    public function __construct($db, $idUser, $username = null, $email = null, $password = null, $role = 'user', $status = 'active', $image = null, $phone = null) {
         $this->db = $db;
+        $this->idUser = $idUser;
         $this->username = $username;
         $this->email = $email;
         $this->password = $password;
@@ -22,37 +22,37 @@ abstract class User {
         $this->phone = $phone;
     }
 
-    // Méthodes communes
     public function register() {
-        // Register a new user
         $query = "INSERT INTO Users (username, email, password, role, status, image, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([$this->username, $this->email, password_hash($this->password, PASSWORD_BCRYPT), $this->role, "active", $this->image, $this->phone]);
         return $this->db->lastInsertId();
     }
 
-    public function login() {
-        // Login logic
+    public function getUserByEmail($email) {
         $query = "SELECT * FROM Users WHERE email = ?";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$this->email]);
-        $user = $stmt->fetch();
+        $stmt->execute([$email]);
+        return $stmt->fetch();
+    }
+
+    public function login() {
+        $user = $this->getUserByEmail($this->email);
         if ($user && password_verify($this->password, $user['password'])) {
-            $_SESSION['user'] = $user;
+            $this->idUser = $user['iduser'];
             return true;
         }
         return false;
     }
+    
 
     public function logout() {
-        // Logout logic
         unset($_SESSION['user']);
         session_destroy();
     }
 
     public function updateProfile() {
-        // Update user profile
-        $query = "UPDATE Users SET username = ?, email = ?, phone = ?, image = ? WHERE idUser = ?";
+        $query = "UPDATE Users SET username = ?, email = ?, phone = ?, image = ? WHERE iduser = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$this->username, $this->email, $this->phone, $this->image, $this->idUser]);
     }
