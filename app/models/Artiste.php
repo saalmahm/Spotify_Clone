@@ -1,7 +1,16 @@
 <?php
-
 class Artiste extends User {
-    
+    protected $db;
+
+    public function __construct($db) {
+        parent::__construct($db); // Appel au constructeur de la classe parente
+        $this->db = $db;
+    }
+
+    public function getDb() {
+        return $this->db;
+    }
+
     public function televerserChanson($chansonData) {
         if (empty($chansonData['titre']) || empty($chansonData['image']) || empty($chansonData['artisteId']) || empty($chansonData['categorieId']) || empty($chansonData['type']) || empty($chansonData['songFile'])) {
             error_log('Validation failed: Some fields are empty');
@@ -26,10 +35,11 @@ class Artiste extends User {
 
         if ($result) {
             error_log('Chanson ajoutée avec succès dans la base de données');
+            return $this->db->lastInsertId(); // Retourner l'ID de la chanson ajoutée
         } else {
             error_log('Erreur lors de l\'ajout de la chanson : ' . print_r($stmt->errorInfo(), true));
         }
-        return $result;
+        return false;
     }
 
     public function viewGlobalStatistics() {
@@ -61,8 +71,6 @@ class Artiste extends User {
             return $stmt->execute([$albumData['titre'], $this->idUser, $albumData['anneeSortie']]);
         }
     }
-
 }
-
 
 ?>

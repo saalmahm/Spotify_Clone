@@ -2,32 +2,29 @@
 class Playlist {
     private $idPlayListe;
     private $titre;
-    private $type; // Peut être 'album', 'playlist' ou 'favoris'
+    private $type; 
     private $userId;
-    private $anneeSortie;
+    private $anneesortie;
     private $visibilite;
     private $chansons = [];
     private $db;
 
-    public function __construct($db, $titre, $type, $userId, $anneeSortie = null, $visibilite = 'visible') {
+    public function __construct($db, $titre, $type, $userId, $anneesortie = null, $visibilite = 'visible') {
         $this->db = $db;
         $this->titre = $titre;
         $this->type = $type;
         $this->userId = $userId;
-        $this->anneeSortie = $anneeSortie;
+        $this->anneesortie = $anneesortie;
         $this->visibilite = $visibilite;
     }
 
-    // Méthode pour créer une playlist, un album ou une liste de favoris
     public function creerPlaylist() {
-        $query = "INSERT INTO PlayListe (titre, type, userId, anneeSortie, visibilite) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO PlayListe (titre, type, userId, anneesortie, visibilite) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$this->titre, $this->type, $this->userId, $this->anneeSortie, $this->visibilite]);
+        $stmt->execute([$this->titre, $this->type, $this->userId, $this->anneesortie, $this->visibilite]);
         $this->idPlayListe = $this->db->lastInsertId(); // Récupérer l'ID de la playlist créée
         return $this->idPlayListe;
     }
-
-    // Méthode pour supprimer une playlist, un album ou une liste de favoris
     public function supprimerPlaylist() {
         $query = "DELETE FROM PlayListe WHERE idPlayListe = ?";
         $stmt = $this->db->prepare($query);
@@ -36,9 +33,9 @@ class Playlist {
 
     // Méthode pour modifier une playlist, un album ou une liste de favoris
     public function modifierPlaylist() {
-        $query = "UPDATE PlayListe SET titre = ?, type = ?, anneeSortie = ?, visibilite = ? WHERE idPlayListe = ?";
+        $query = "UPDATE PlayListe SET titre = ?, type = ?, anneesortie = ?, visibilite = ? WHERE idPlayListe = ?";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([$this->titre, $this->type, $this->anneeSortie, $this->visibilite, $this->idPlayListe]);
+        return $stmt->execute([$this->titre, $this->type, $this->anneesortie, $this->visibilite, $this->idPlayListe]);
     }
 
     // Méthode pour ajouter une chanson à une playlist, un album ou une liste de favoris
@@ -93,5 +90,39 @@ class Playlist {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
+
+
+    public function uploadAlbum($albumData) {
+        $this->titre = $albumData['albumTitle'];
+        $this->type = 'album';
+        $this->userId = $albumData['artisteId'];
+        $this->anneesortie = date('Y'); // Année actuelle
+        $this->visibilite = 'visible';
+
+        // Créer l'album dans la base de données
+        $albumId = $this->creerPlaylist();
+
+        // Ajouter les chansons à l'album
+        foreach ($albumData['songTitles'] as $index => $titre) {
+            $chansonData = [
+                'titre' => $titre,
+                'image' => $albumData['songImages'][$index],
+                'artisteId' => $albumData['artisteId'],
+                'categorieId' => $albumData['songCategories'][$index],
+                'type' => 'audio', // ou 'video' selon le type de fichier
+                'songFile' => $albumData['songFiles'][$index]
+            ];
+
+            // Utiliser l'objet Artiste pour téléverser la chanson
+            $chansonId = $this->artiste->televerserChanson($chansonData);
+
+            // Ajouter la chanson à l'album
+            $this->ajouterChanson($chansonId);
+        }
+
+        return $albumId;
+    }
+
+
 }
 ?>

@@ -19,7 +19,7 @@ class Router {
             'profile' => ['UserController', 'updateProfile'],
             'register' => ['UserController', 'register'],
             'uploadSong' => ['ArtisteController', 'uploadSong'],
-            'uploadAlbum'=> ['ArtisteController', 'organiserChansons'],
+            'uploadAlbum'=> ['ArtisteController', 'uploadAlbum'],
             'logout' => ['UserController', 'logout'],
 
         ];

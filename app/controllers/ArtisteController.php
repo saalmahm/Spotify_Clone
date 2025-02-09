@@ -6,11 +6,6 @@ class ArtisteController {
         $this->artiste_model = new Artiste($db, null);
     }
 
-    public function index() {
-        $categories = $this->artiste_model->getCategories();
-        require __DIR__ .'/../views/uploadSong.php';
-    }
-
     public function uploadSong() {
         error_log('Méthode uploadSong appelée');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
@@ -70,4 +65,50 @@ class ArtisteController {
             require __DIR__ .'/../views/uploadSong.php';
         }
     }
+
+    public function uploadAlbum() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $albumData = [
+                'albumTitle' => $_POST['albumTitle'],
+                'artisteId' => $_POST['artisteId'],
+                'songTitles' => $_POST['songTitles'],
+                'songCategories' => $_POST['songCategories'],
+                'songFiles' => $_FILES['songFiles']['name'],
+                'songImages' => $_FILES['songImages']['name']
+            ];
+    
+            // Valider et uploader les fichiers des chansons
+            $targetDirSongs = "public/songAudio/";
+            $targetDirImages = "public/songImage/";
+            foreach ($_FILES['songFiles']['tmp_name'] as $index => $tmpName) {
+                $fileNameSong = basename($_FILES['songFiles']['name'][$index]);
+                $fileNameImage = basename($_FILES['songImages']['name'][$index]);
+                $targetFilePathSong = $targetDirSongs . $fileNameSong;
+                $targetFilePathImage = $targetDirImages . $fileNameImage;
+    
+                move_uploaded_file($tmpName, $targetFilePathSong);
+                move_uploaded_file($_FILES['songImages']['tmp_name'][$index], $targetFilePathImage);
+    
+                $albumData['songFiles'][$index] = $targetFilePathSong;
+                $albumData['songImages'][$index] = $targetFilePathImage;
+            }
+    
+            // Créer l'album en passant l'objet Artiste
+            $playlist = new Playlist($this->artiste_model->getDb(), $albumData['albumTitle'], 'album', $albumData['artisteId'], null, 'visible', $this->artiste_model);
+            $albumId = $playlist->uploadAlbum($albumData);
+    
+            if ($albumId) {
+                $message = "L'album a été uploadé avec succès.";
+            } else {
+                $message = "Erreur lors de l'upload de l'album.";
+            }
+    
+            header('Location: home');
+        } else {
+            $categories = $this->artiste_model->getCategories();
+            require __DIR__ .'/../views/uploadAlbum.php';
+        }
+    }
+    
+    
 }
