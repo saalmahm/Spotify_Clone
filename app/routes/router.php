@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../controllers/ArtisteController.php';
+require_once __DIR__ . '/../controllers/PlaylistController.php';
 
 class Router {
     private $db;
@@ -21,7 +22,7 @@ class Router {
             'uploadSong' => ['ArtisteController', 'uploadSong'],
             'uploadAlbum'=> ['ArtisteController', 'uploadAlbum'],
             'logout' => ['UserController', 'logout'],
-
+            'album' => ['PlaylistController', 'showAlbumDetails'],
         ];
     
         // Vérification de la route et appel du contrôleur

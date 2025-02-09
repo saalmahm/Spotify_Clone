@@ -64,12 +64,11 @@ CREATE TABLE Chanson (
     type VARCHAR(10) CHECK (type IN ('audio', 'video')) NOT NULL,
     artisteId INT NOT NULL,
     categorieId INT,
+    duree INTERVAL,
+    songFile VARCHAR(255),
     FOREIGN KEY (artisteId) REFERENCES Users (idUser) ON DELETE CASCADE,
     FOREIGN KEY (categorieId) REFERENCES Category (idCategory) ON DELETE SET NULL
 );
-ALTER TABLE Chanson
-ADD COLUMN songFile VARCHAR(255);
-
 -- Table des playlists
 CREATE TABLE PlayListe (
     idPlayListe SERIAL PRIMARY KEY,

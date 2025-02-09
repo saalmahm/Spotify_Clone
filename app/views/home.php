@@ -32,6 +32,10 @@
                             <h3 class="text-lg font-semibold mt-3"><?php echo htmlspecialchars($album['nom']); ?></h3>
                             <p class="text-gray-400 text-sm">Par <?php echo htmlspecialchars($album['artistename']); ?></p>
                             <p class="text-gray-500 text-xs mt-1"><?php echo $album['nombrechansons']; ?> chansons</p>
+                            <a href="<?php echo 'index.php?route=album&id=' . $album['idalbum']; ?>" 
+                               class="mt-2 inline-block w-full text-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                                Consulter l'album
+                            </a>
                         </div>
                     <?php } ?>
                 <?php } else { ?>

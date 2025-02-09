@@ -138,6 +138,51 @@ class Playlist {
         return $albumId;
     }
 
+    public function getAlbumDetails($albumId) {
+        $query = "SELECT 
+                    a.idAlbum,
+                    a.nom,
+                    u.username as artistename,
+                    (
+                        SELECT c.image 
+                        FROM Chanson c 
+                        JOIN AlbumChanson ac ON c.idChanson = ac.chansonId 
+                        WHERE ac.albumId = a.idAlbum 
+                        LIMIT 1
+                    ) as cover,
+                    COUNT(ac.chansonId) as nombreChansons
+                  FROM Album a
+                  JOIN Users u ON a.artisteId = u.idUser
+                  JOIN AlbumChanson ac ON a.idAlbum = ac.albumId
+                  WHERE a.idAlbum = ?
+                  GROUP BY a.idAlbum, a.nom, u.username";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$albumId]);
+        $album = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if (!$album) {
+            return null;
+        }
+
+        // Fetch songs in the album
+        $songQuery = "SELECT 
+                        c.idChanson, 
+                        c.titre, 
+                        c.songFile,
+                        '00:00' as duree
+                      FROM Chanson c
+                      JOIN AlbumChanson ac ON c.idChanson = ac.chansonId
+                      WHERE ac.albumId = ?";
+        
+        $songStmt = $this->db->prepare($songQuery);
+        $songStmt->execute([$albumId]);
+        $chansons = $songStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'album' => $album,
+            'chansons' => $chansons
+        ];
+    }
 }
 ?>
